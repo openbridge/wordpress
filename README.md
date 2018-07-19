@@ -227,7 +227,7 @@ You will likely want to dispatch  logs to a service like Amazon Cloudwatch. This
 # Versioning
 | Docker Tag | AMI ID | AMI Version | Alpine Version |
 |-----|-------|-----|--------|
-| latest | xxxx | 1.0.0 | edge |
+| latest | ami-deb3eea1	 | 1.0.0 | edge |
 
 
 # Issues
