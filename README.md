@@ -3,6 +3,8 @@
 # Wordpress
 This Wordpress install is a based on a collection of optimized Docker images from [Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Combined they create a high performance, optimized environment for Wordpress which provides reliability, security, and scale.
 
+**Note:** This document is the support doc used by our AWS AMI: https://aws.amazon.com/marketplace/pp/B07FCV1BPF
+
 ## Features
 
 [Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis have been combined to deliver the following features:
