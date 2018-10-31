@@ -1,10 +1,12 @@
 ![Image of Wordpress](https://cdn.openbridge.com/assets/images/openbridge-wordpress-small.png)
 
-# Wordpress
-This Wordpress install is a based on a collection of optimized Docker images from [Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Combined they create a high performance, optimized environment for Wordpress which provides reliability, security, and scale.
+# Docker Wordpress with Nginx, PHP-FPM, MariaDB and Redis
 
-## Features
+Our WordPress Stack provides an automated, super fast solution for those who prefer self-hosted WordPress installs. This Wordpress stack is based on lightweight, secure, up-to-date, and highly optimized Docker images. This includes a best of breed collection of Docker images from [NGINX](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Together they create a performance driven, flexible environment that delivers reliability, security, and scale.
 
+Our NGINX and PHP optimizations ensure optimal Wordpress performance, reducing or eliminating the need of the overhead related to costly Wordpress plugins. As a result you can easily serve millions of requests a day with minimal CPU, RAM and disk resources.
+
+# Features
 [Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis have been combined to deliver the following features:
 
 * Reverse Proxy
@@ -27,29 +29,172 @@ This Wordpress install is a based on a collection of optimized Docker images fro
 * Cache purge
 * Opcache
 * Pair with [high performance PHP-FPM container](https://github.com/openbridge/ob_php-fpm)
+* ACME: The simplest shell script for Let's Encrypt free certificate client (https://github.com/Neilpang/acme.sh)
 
 There are many, many other benefits to this system. Give it a try!
 
-# Welcome! Your new Wordpress install
-Congratulations! If you have launched the AMI you will have your default Wordpress site up and running in a few minutes. The address would look like this `https://ec2-22-123-98-217.compute-1.amazonaws.com` and display a default Wordpress install:
+# Step 1: Launch Amazon EC2 AMI with USERDATA
+The first step is to activate is visiting the AWS Marketplace (https://aws.amazon.com/marketplace/pp/B07FCV1BPF) and subscribing to the service.
+
+**Note:** If you are looking to deploy to another host like Google Cloud, Digital Ocean or even AWS Lightsail, contact us.
+
+## Set your domain via USERDATA
+We will auto provision you a `letsencrypt` SSL certificate if you have DNS assigned to your instance. The process is recommended and greatly simplifies your setup.
+
+**Note:** USERDATA ONLY applies when launching your AMI, not during a `start`/`stop` of an instance.
+
+### How To Set USERDATA?
+When launching your AMI put the following in as `USERDATA` replacing `{{yourhost.com}}` with your instance DNS. When launching your AMI simply set:
+
+```
+#!/bin/bash
+echo "export SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
+```
+
+It will look like this:
+
+![Image of Default Wordpress Site](./ami-userdata.png)
+
+
+This will set the host name in your instance.
+
+```
+#!/bin/bash
+echo "export SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
+```
+
+We require you use the a domain (`yourhost.com` or `www.yourhost.com`). This will ensure that everything is correctly auto configured on your behalf. For example, if you set `www.yourhost.com` NGINX will set it a server as `www.yourhost.com`.
+
+If you decide not to set DNS via `USERDATA` go to **Step 3**.
+
+### IMPORTANT
+Make sure your IP (x.x.x.x) points to a DNS A Record uses the domain you set via USERDATA ( `yourhost.com` or `www.yourhost.com` ).
+
+**This must be done in advance of starting your AMI else the setup process and `letsencrypt` will not be able to resolve the name to your instance.** This will put your instance in an unstable state. Ideally, use static elastic IP address. This makes it super simple to setup your domain and IP in advance. Otherwise AWS will assign a dynamic IP address which you will need to copy and enter into your DNS records.
+
+In this example we pasted the IP address as an A record for our target domain like this:
+
+![Image of setting up DNS A record](./route53.png)
+
+
+# Step 2: Welcome! Your new Wordpress install is activated
+**Congratulations!** If you have launched the AMI you will have your default Wordpress site up and running in a few minutes.
+
+To verify your server is active visit the test page here: `https://yourhost.com/index.html`. If you did not set a domain, use the default Amazon EC2 address would look like this: `https://ec2-22-123-98-217.compute-1.amazonaws.com/index.html`
+
+Once your Wordpress install is complete, or if you set your hostname via `USERDATA`, then you can connect to it like `https://yourhost.com`.
+
+**Note:** You will want to delete the test `index.html`.
+
+The default Wordpress install visually looks like:
 
 ![Image of Default Wordpress Site](./generic-install-small.png)
 
-# Getting Started
-There are still a few items remaining to configure your instance to suit your situation.
+If you want to log into the `wp-admin` console, you need to get your password. The default the `wp-admin` password will be your EC2 Instance ID:
 
-First, if you want to log into the `wp-admin` console, you need to get your password. You can get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds (see below).
+![Image of Default Wordpress Site](./instance-id.png)
 
-Second, we need to set your domain name and get your SSL setup. Your default install uses generic SSL certs that you need to replace.
+You can also get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds.
 
-## Configuring Your Environment
-When you SSH into your server, in your `HOME` directory you will see a `wordpress.env` file that was created for you. This is used by your Docker containers to initialize their settings.
+# Step 3: Manual Setup of SSL
+Did you setup DNS via `USERDATA`? No, then you need to set your domain name and get your SSL setup. If you do not set your host via AMI `USERDATA` we will install self-signed SSL certificates. This will be enough to get you up and running. The following section describes how you can manually set your server host and install SSL certificates.
+
+## Manually Configuring your SSL certificates
+Your base Wordpress install comes with self-signed certs if you did not set the DNS via `USERDATA`. It will look like this:
+
+![Image of Default Wordpress Site](./generic-ssl.png)
+
+You will certainly want to change these.
+
+### Understanding how SSL certs are organized
+
+To keep things organized we default to using  [`letsencrypt`](https://letsencrypt.org/) for SSL certificates/keys, paths and naming conventions. Even if you are using your own certs, follow the naming conventions detailed below.
+
+In keeping with the `letsencrypt` conventions make sure your certs are using the same naming scheme:
+```
+/etc/letsencrypt/live/${NGINX_SERVER_NAME}/;
+├── server
+│   ├── cert.pem
+│   ├── chain.pem
+│   ├── fullchain.pem
+│   └── privkey.pem
+```
+The default locations for the SSL certs are in `/conf.d/ssl.conf`:
+```nginx
+ssl_certificate /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/privkey.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/chain.pem;
+```
+Even if you are not using letsencrypt simple repurpose the path above.
+
+## Using `certbot` for `letsencrypt` SSL certs
+On your **host**, not in the Docker image,  we pre-installed `certbot`. The install process looks something like this if you need to rerun it yourself:
+
+If your run into an errors with certbot, trying running these commands:
+```bash
+rm -rf ~/.local/share/letsencrypt
+rm -rf /opt/eff.org/*
+# Install for Lets Encrypt
+mkdir ~/src
+cd ~/src || exit
+wget http://www.dest-unreach.org/socat/download/socat-1.7.3.0.tar.gz
+tar -xf socat-1.7.3.0.tar.gz
+cd socat-1.7.3.0 || exit
+./configure --prefix=$HOME
+make
+make install
+
+curl https://get.acme.sh | sh
+
+certbot-auto certonly -n --debug --agree-tos --standalone -d $SERVER_HOSTNAME > /dev/null
+```
+
+## Mount your certs
+If you when down the path of using USERDATA, this has been done for you. For reference, we mount your certs directory on the host to: `/etc/letsencrypt/live/<yourdomain>`. If you need to set SSL certs manually, then read on.
+
+### Edit `wordpress.yml`
+This assumes you already have the certs on your host here `/etc/letsencrypt/live/<yourdomain>`.
+
+Next, we want to add the paths to the Docker compose file under the `nginx` block. Here is the where you can find the file: `/home/ec2-user/wordpress.yml`
+
+You will already see `- wordpress_data:/usr/share/nginx/html` present. You want to add the following into the compose file. Remember to put use the actual domain you used with certbot:
+
+```docker
+volumes:
+  - wordpress_data:/usr/share/nginx/html
+  - /etc/letsencrypt/live/<yourdomain>/fullchain.pem:/etc/letsencrypt/live/<yourdomain>/fullchain.pem
+  - /etc/letsencrypt/live/<yourdomain>/privkey.pem:/etc/letsencrypt/live/<yourdomain>/privkey.pem
+  - /etc/letsencrypt/live/<yourdomain>/chain.pem:/etc/letsencrypt/live/<yourdomain>/chain.pem
+```
+
+If you do not have a `chain.pem`, simply copy the `fullchain.pem` over.
+
+```bash
+cp /etc/letsencrypt/live/<yourdomain>/fullchain.pem  /etc/letsencrypt/live/<yourdomain>/chain.pem
+```
+
+## Automate SSL renewals
+You will need to setup a renewal process. The docs say check twice a day for changes. Lets add the renewal process to cron:
+```bash
+cat << EOF > /tmp/crontab.conf
+55 4,16 * * * /opt/eff.org/certbot/venv/local/bin/pip install --upgrade certbot
+59 4,16 * * * certbot-auto certonly -n --debug --agree-tos --pre-hook="docker stop nginx" --post-hook="docker start nginx" --standalone -d *.yourhost.com > /dev/null
+EOF
+```
+Lastly, add everything to cron via `cat /tmp/crontab.conf | crontab - && crontab -l`
+
+We have also installed ACME.sh (https://github.com/Neilpang/acme.sh). If you prefer, you can use this as your client for Lets Encrypt!
+
+# Docker Configuration
+
+## Configuring your Docker container
+When you SSH into your server go to your `HOME` directory. In there you will see a `wordpress.env` file that was created for you. This is used by your Docker containers to initialize various container settings.
 
 Here is what is resident in the file:
 
 ```
 # Nginx Server
-NGINX_SERVER_NAME=ec2-54-162-77-237.compute-1.amazonaws.com
+NGINX_SERVER_NAME=ec2-54-162-77-237.compute-1.amazonaws.com or yourhost.com
 NGINX_APP_PLUGIN=wordpress
 NGINX_CONFIG=php
 NGINX_DEV_INSTALL=
@@ -83,7 +228,7 @@ PHP_FPM_UPSTREAM=php-fpm:9000
 PHP_FPM_PORT=9000
 ```
 
-There is only one you will need to edit, which is `NGINX_SERVER_NAME`. You will likely see the AWS default. We default to the name assigned by AWS which would look like `ec2-22-123-98-217.compute-1.amazonaws.com`. You need to change this to reflect your actual domain name (not the AWS one). You do this by setting `NGINX_SERVER_NAME`.
+If you did not set DNS via `USERDATA` then there is only one place you will need to edit, which is `NGINX_SERVER_NAME`. You will likely see the AWS default. We default to the name assigned by AWS which would look like `ec2-22-123-98-217.compute-1.amazonaws.com`. You need to change this to reflect your actual domain name (not the AWS one). You do this by setting `NGINX_SERVER_NAME`.
 
 * `NGINX_SERVER_NAME` sets the default server name in `nginx.conf` and a few other locations. If you do not set this it will default to `localhost`. Typically this will be your domain name like `www.openbridge.com`. Note: Incorrectly setting a server name can create issues as many parts of the service rely on this matching your domain.
 
@@ -92,8 +237,7 @@ The default username is set via `WORDPRESS_ADMIN` and is `admin`.
 
 As always, keep your ENV file safe and secure.
 
-
-### Advanced Configuration
+### Advanced configuration
 Don't change any of the defaults for these unless you are a pro and understand what you are doing:
 
 * `NGINX_DOCROOT` sets the default www directory. The containers default to `/usr/share/nginx/html` so it is best left unchanged.
@@ -105,12 +249,11 @@ Don't change any of the defaults for these unless you are a pro and understand w
 
 You can set a collection of dummy files and certs for local testing:
 * `NGINX_DEV_INSTALL` Set to `true` if you want self-signed SSL certs installed and "hello world" HTML and PHP pages installed. This is useful for testing.
-* NOTE: Self-signed SSL certificates are always installed if the system does not detect here in the default cert location at `/etc/letsencrypt/live/{NGINX_SERVER_NAME}/`
+* NOTE: Self-signed SSL certificates are always installed if the system does not detect here in the default cert location at `/etc/letsencrypt/live/{HOST}/`
 
-If the rest of the `wordpress.env` variables don't look familiar, don't touch them ;)
+If the rest of the `wordpress.env` variables don't look familiar, don't touch them ; )
 
-
-## Using WP-CLI to Manage Your Wordpress Install
+## Using WP-CLI to manage your Wordpress install
 WP-CLI is the command-line interface for WordPress. You can update plugins, configure multisite installs and much more, without using a web browser.
 
 WP-CLI is installed at `/usr/bin/wp`. To run WP-CLI commands make sure you are located in the Wordpress root directory. In this case it is `/usr/share/nginx/html`
@@ -121,89 +264,8 @@ wp --allow-root plugin install amp antispam-bee nginx-helper wp-mail-smtp wordpr
 ```
 For a full list of commands, check out the [WP-CLI docs](https://developer.wordpress.org/cli/commands/).
 
-## Configuring Your SSL Certificates
-Your base Wordpress install comes with self-signed certs.
-
-![Image of Default Wordpress Site](./generic-ssl.png)
-
-You will certainly want to change these.
-
-### Understanding how SSL certs are organized
-
-To keep things organized we default to using  [`letsencrypt`](https://letsencrypt.org/) for SSL certificates/keys, paths and naming conventions. Even if you are using your own certs, follow the naming conventions detailed below.
-
-In keeping with the `letsencrypt` conventions make sure your certs are using the same naming scheme:
-```
-/etc/letsencrypt/live/${NGINX_SERVER_NAME}/;
-├── server
-│   ├── cert.pem
-│   ├── chain.pem
-│   ├── fullchain.pem
-│   └── privkey.pem
-```
-The default locations for the SSL certs are in `/conf.d/ssl.conf`:
-```nginx
-ssl_certificate /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/privkey.pem;
-ssl_trusted_certificate /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/chain.pem;
-```
-Even if you are not using letsencrypt simple repurpose the path above.
-
-## Installing `certbot` for `letsencrypt` SSL certs
-On your **host**, not in the Docker image, install `certbot`:
-
-* Download `certbot`: `curl -O https://dl.eff.org/certbot-auto`
-* Set permissions:` chmod +x certbot-auto`
-* Move the executable: `mv certbot-auto /usr/local/bin/certbot-auto`
-* Generate your certificate: `/usr/local/bin/certbot-auto certonly -n --debug --agree-tos --email bob@gmail.com --standalone -d *.yourdomain.com`
-
-If your run into an errors with certbot, trying running these commands:
-```bash
-rm -rf ~/.local/share/letsencrypt
-rm -rf /opt/eff.org/*
-pip install -U certbot
-#try this
-/usr/local/bin/certbot-auto certonly -n --debug --agree-tos --pre-hook="docker stop nginx" --post-hook="docker start nginx" --standalone -d *.yourdomain.com > /dev/null
-# or this
-certbot renew --debug
-```
-Certbot seems to be sensitive to OS and python updates and removing these files has helped clear up issues in the past.
-
-
-### Mount Your Certs
-You mount your certs directory on the host to the certs: `/etc/letsencrypt/live/<yourdomain>`.
-
-With your certs on you host, add the paths to the Docker compose file under the `nignx` block. Here is the where you can find the file: `/home/ec2-user/wordpress.yml`
-
-You will already see `- wordpress_data:/usr/share/nginx/html` present. You want to add the following into the compose file. Remember to put use the actual domain you used with certbot:
-
-```docker
-volumes:
-  - wordpress_data:/usr/share/nginx/html
-  - /etc/letsencrypt/live/<yourdomain>/fullchain.pem:/etc/letsencrypt/live/<yourdomain>/fullchain.pem
-  - /etc/letsencrypt/live/<yourdomain>/privkey.pem:/etc/letsencrypt/live/<yourdomain>/privkey.pem
-  - /etc/letsencrypt/live/<yourdomain>/chain.pem:/etc/letsencrypt/live/<yourdomain>/chain.pem
-```
-
-If you do not have a `chain.pem`, simply copy the `fullchain.pem` over.
-
-```bash
-cp /etc/letsencrypt/live/<yourdomain>/fullchain.pem  /etc/letsencrypt/live/<yourdomain>/chain.pem
-```
-
-### Automate SSL renewals
-You will need to setup a renewal process. The docs say check twice a day for changes. Lets add the renewal process to cron:
-```bash
-cat << EOF > /tmp/crontab.conf
-55 4,16 * * * /opt/eff.org/certbot/venv/local/bin/pip install --upgrade certbot
-59 4,16 * * * /usr/local/bin/certbot-auto certonly -n --debug --agree-tos --pre-hook="docker stop nginx" --post-hook="docker start nginx" --standalone -d *.openbridge.com > /dev/null
-EOF
-```
-
-Lastly, add everything to cron via `cat /tmp/crontab.conf | crontab - && crontab -l`
-
 # Customization
-This Wordpress services builds upon the community (free) versions of our Nginx and PHP-FPM containers. You are free to customize these services and this Wordpress service as you feel is appropriate. However, we can only provide support to systems that use the default installs.
+This Wordpress services builds upon the community (free) versions of our [NGINX](https://github.com/openbridge/nginx) and [PHP-FPM](https://github.com/openbridge/ob_php-fpm) images. You are free to customize these services and this Wordpress service as you feel is appropriate. However, we can only provide support to systems that use the default installs.
 
 Looking for customizations, configuration or enhancement based on your specific requirements? here are a few example engagements:
 
@@ -222,13 +284,13 @@ Looking for customizations, configuration or enhancement based on your specific 
 Contact us and we are happy to discuss a professional services engagement.
 
 # Logs
-You will likely want to dispatch  logs to a service like Amazon Cloudwatch. This will allow you to setup alerts and triggers to perform tasks based on container activity.
+You will likely want to dispatch logs to a service like Amazon Cloudwatch. This will allow you to setup alerts and triggers to perform tasks based on container activity.
 
 # Versioning
 | Docker Tag | AMI ID | AMI Version | Alpine Version |
 |-----|-------|-----|--------|
-| latest | xxxx | 1.0.0 | edge |
-
+| latest | ami-deb3eea1 | 1.0.2 | 3.8 |
+| latest | ami-deb3eea1 | 1.0.1 | 3.8 |
 
 # Issues
 
