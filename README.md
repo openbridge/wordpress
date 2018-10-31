@@ -4,10 +4,10 @@
 
 Our WordPress Stack provides an automated, super fast solution for those who prefer self-hosted WordPress installs. This Wordpress stack is based on lightweight, secure, up-to-date, and highly optimized Docker images. This includes a best of breed collection of Docker images from [NGINX](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Together they create a performance driven, flexible environment that delivers reliability, security, and scale.
 
-Our NGINX and PHP optimizations ensure optimal Wordpress performance, reducing or eliminating the need of the overhead related to costly Wordpress plugins. As a result you can easily serve millions of requests a day with minimal CPU, RAM and disk resources.
+**Note:** This document is the support doc used by our AWS AMI: https://aws.amazon.com/marketplace/pp/B07FCV1BPF
 
 # Features
-[Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis have been combined to deliver the following features:
+Our NGINX and PHP optimizations ensure optimal Wordpress performance, reducing or eliminating the need of the overhead related to costly Wordpress plugins. As a result you can easily serve millions of requests a day with minimal CPU, RAM and disk resources. [Nginx](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis have been combined to deliver the following features:
 
 * Reverse Proxy
 * SEO optimizations
