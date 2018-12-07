@@ -48,24 +48,27 @@ When launching your AMI put the following in as `USERDATA` replacing `{{yourhost
 
 ```
 #!/bin/bash
-echo "export SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
+echo "SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
 ```
 
 It will look like this:
 
+![Image of Default Wordpress Site](./ami-userdata2.png)
+
+Close up:
+
 ![Image of Default Wordpress Site](./ami-userdata.png)
 
-
-This will set the host name in your instance.
+Setting `USERDATA` will set the host name in your instance. If you do not set the `USERDATA`. we will use the instance host name set by AWS.
 
 ```
 #!/bin/bash
-echo "export SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
+echo "SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
 ```
 
-We require you use the a domain (`yourhost.com` or `www.yourhost.com`). This will ensure that everything is correctly auto configured on your behalf. For example, if you set `www.yourhost.com` NGINX will set it a server as `www.yourhost.com`.
+We require you use the a domain (`yourhost.com` or `www.yourhost.com`). This will ensure that everything is correctly auto configured on your behalf. For example, if you set `www.yourhost.com` NGINX will set it a server as `www.yourhost.com`. The domain `yourhost.com` is a placeholder, an example, Do not blindly use `yourhost.com`!! It seems obvious, but not to everyone.
 
-If you decide not to set DNS via `USERDATA` go to **Step 3**.
+Remember, if you decide not to set DNS via `USERDATA` go to **Step 3**. You will need to manually configure SSL. We will install self-signed SSL certs as a temporary solution until you can configure everything according to the process outlined in Step 3.
 
 ### IMPORTANT
 Make sure your IP (x.x.x.x) points to a DNS A Record uses the domain you set via USERDATA ( `yourhost.com` or `www.yourhost.com` ).
@@ -96,6 +99,7 @@ If you want to log into the `wp-admin` console, you need to get your password. T
 
 You can also get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds.
 
+
 # Step 3: Manual Setup of SSL
 Did you setup DNS via `USERDATA`? No, then you need to set your domain name and get your SSL setup. If you do not set your host via AMI `USERDATA` we will install self-signed SSL certificates. This will be enough to get you up and running. The following section describes how you can manually set your server host and install SSL certificates.
 
@@ -111,7 +115,7 @@ You will certainly want to change these.
 To keep things organized we default to using  [`letsencrypt`](https://letsencrypt.org/) for SSL certificates/keys, paths and naming conventions. Even if you are using your own certs, follow the naming conventions detailed below.
 
 In keeping with the `letsencrypt` conventions make sure your certs are using the same naming scheme:
-```
+```bash
 /etc/letsencrypt/live/${NGINX_SERVER_NAME}/;
 ├── server
 │   ├── cert.pem
@@ -128,38 +132,55 @@ ssl_trusted_certificate /etc/letsencrypt/live/{{NGINX_SERVER_NAME}}/chain.pem;
 Even if you are not using letsencrypt simple repurpose the path above.
 
 ## Using `certbot` for `letsencrypt` SSL certs
-On your **host**, not in the Docker image,  we pre-installed `certbot`. The install process looks something like this if you need to rerun it yourself:
+On your **host**, not in the Docker image,  we pre-installed the `certbot` Docker image.
 
-If your run into an errors with certbot, trying running these commands:
+First, make sure your `NGINX` is not running. You need to do this because `cerbot` needs to have post 80 and 443 open. If `NGINX` is running, there will be a port conflict. This will gracefully close down everything:
+
 ```bash
-rm -rf ~/.local/share/letsencrypt
-rm -rf /opt/eff.org/*
-# Install for Lets Encrypt
-mkdir ~/src
-cd ~/src || exit
-wget http://www.dest-unreach.org/socat/download/socat-1.7.3.0.tar.gz
-tar -xf socat-1.7.3.0.tar.gz
-cd socat-1.7.3.0 || exit
-./configure --prefix=$HOME
-make
-make install
-
-curl https://get.acme.sh | sh
-
-certbot-auto certonly -n --debug --agree-tos --standalone -d $SERVER_HOSTNAME > /dev/null
+/usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml down --remove-orphans
 ```
 
-## Mount your certs
-If you when down the path of using USERDATA, this has been done for you. For reference, we mount your certs directory on the host to: `/etc/letsencrypt/live/<yourdomain>`. If you need to set SSL certs manually, then read on.
+Next, provision your SSL certificates:
+
+```bash
+docker pull certbot/certbot
+
+docker run -it --rm -p 80:80 -p 443:443 --name certbot -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" certbot/certbot certonly -n --debug --agree-tos --email user@gmail.com --standalone -d ${SERVER_HOSTNAME}
+```
+
+Then start up all your services again:
+```bash
+/usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml up -d --remove-orphans
+```
+
+
+## Automate `letsencrypt` SSL renewals
+You will need to setup a renewal process. The docs say check twice a day for changes. Lets add the renewal process to cron:
+```bash
+cat << EOF > /tmp/crontab.conf
+55 4,16 * * * /opt/eff.org/certbot/venv/local/bin/pip install --upgrade certbot
+59 4,16 * * * certbot-auto certonly -n --debug --agree-tos --pre-hook="docker stop nginx" --post-hook="docker start nginx" --standalone -d *.yourhost.com > /dev/null
+EOF
+```
+Lastly, add everything to cron via `cat /tmp/crontab.conf | crontab - && crontab -l`
+
+We have also installed ACME.sh (https://github.com/Neilpang/acme.sh). If you prefer, you can use this as your client for Lets Encrypt!
+
+## Do you already have SSL certs?
+For reference, we mount SSL certs to a directory on the host: `/etc/letsencrypt/live/<yourdomain>`.
+
+If you need to set SSL certs manually because you have them already via some other third party, then read on.
 
 ### Edit `wordpress.yml`
-This assumes you already have the certs on your host here `/etc/letsencrypt/live/<yourdomain>`.
+First, make sure you place your certs on the host in this path: `/etc/letsencrypt/live/<yourdomain>`.
 
-Next, we want to add the paths to the Docker compose file under the `nginx` block. Here is the where you can find the file: `/home/ec2-user/wordpress.yml`
+Next, we want to add the path to your certs into the Docker compose file. In the compose yml file see the SSL certs under the `nginx` block.
 
-You will already see `- wordpress_data:/usr/share/nginx/html` present. You want to add the following into the compose file. Remember to put use the actual domain you used with certbot:
+Here is the where you can find the file on the host: `/home/ec2-user/wordpress.yml`
 
-```docker
+You will already see `- wordpress_data:/usr/share/nginx/html` present. You want to add the following into the compose file. Remember to put use the actual domain you want to use in place of `<yourdomain>`:
+
+```bash
 volumes:
   - wordpress_data:/usr/share/nginx/html
   - /etc/letsencrypt/live/<yourdomain>/fullchain.pem:/etc/letsencrypt/live/<yourdomain>/fullchain.pem
@@ -172,22 +193,28 @@ If you do not have a `chain.pem`, simply copy the `fullchain.pem` over.
 ```bash
 cp /etc/letsencrypt/live/<yourdomain>/fullchain.pem  /etc/letsencrypt/live/<yourdomain>/chain.pem
 ```
+After making the change to the compose file, save it. Then run this command to start everything:
 
-## Automate SSL renewals
-You will need to setup a renewal process. The docs say check twice a day for changes. Lets add the renewal process to cron:
 ```bash
-cat << EOF > /tmp/crontab.conf
-55 4,16 * * * /opt/eff.org/certbot/venv/local/bin/pip install --upgrade certbot
-59 4,16 * * * certbot-auto certonly -n --debug --agree-tos --pre-hook="docker stop nginx" --post-hook="docker start nginx" --standalone -d *.yourhost.com > /dev/null
-EOF
+/usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml up -d --remove-orphans
 ```
-Lastly, add everything to cron via `cat /tmp/crontab.conf | crontab - && crontab -l`
 
-We have also installed ACME.sh (https://github.com/Neilpang/acme.sh). If you prefer, you can use this as your client for Lets Encrypt!
 
 # Docker Configuration
 
-## Configuring your Docker container
+
+## Starting and Stopping Your Docker Services
+
+If you want to `start` all your services, the command is:
+```bash
+/usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml up -d --remove-orphans
+```
+If you want to `stop` all your services, the command is:
+```bash
+/usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml down --remove-orphans
+```
+
+## Advanced Configuration
 When you SSH into your server go to your `HOME` directory. In there you will see a `wordpress.env` file that was created for you. This is used by your Docker containers to initialize various container settings.
 
 Here is what is resident in the file:
@@ -237,7 +264,7 @@ The default username is set via `WORDPRESS_ADMIN` and is `admin`.
 
 As always, keep your ENV file safe and secure.
 
-### Advanced configuration
+### Only change if you know what you are doing
 Don't change any of the defaults for these unless you are a pro and understand what you are doing:
 
 * `NGINX_DOCROOT` sets the default www directory. The containers default to `/usr/share/nginx/html` so it is best left unchanged.
@@ -292,9 +319,17 @@ You will likely want to dispatch logs to a service like Amazon Cloudwatch. This 
 | latest | ami-deb3eea1 | 1.0.2 | 3.8 |
 | latest | ami-deb3eea1 | 1.0.1 | 3.8 |
 
+
+# Bad Gateway
+
+If you happen to see a bad gateway error, hard reload your browser. It is possible you have something in your browser cache that is causing this:
+
+![Image of Bad Gateway](./bad-Gateway.png)
+
 # Issues
 
 If you have any problems with or questions about this image, please contact us through a GitHub issue.
+
 
 # Contributing
 
