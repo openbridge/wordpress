@@ -324,7 +324,7 @@ You will likely want to dispatch logs to a service like Amazon Cloudwatch. This 
 
 If you happen to see a bad gateway error, hard reload your browser. It is possible you have something in your browser cache that is causing this:
 
-![Image of Bad Gateway](./bad-Gateway.png)
+![Image of Bad Gateway](./bad-gateway.png)
 
 # Issues
 
