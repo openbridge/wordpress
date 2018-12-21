@@ -42,7 +42,7 @@ This is the only WordPress service that combined [Nginx](https://github.com/open
 * Cerbot
 * ACME: The simplest shell script for Let's Encrypt free certificate client (https://github.com/Neilpang/acme.sh)
 
-There are many, many other benefits to this system. Give it a try!
+There are many, many other benefits to this system.
 
 
 # User Guide
@@ -84,6 +84,7 @@ There are many, many other benefits to this system. Give it a try!
 First, you need to order your installer. You can get that here!
 
 <a href="http://get.wordpressapp.sh" target="_blank"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/></a>
+
 ### Your Installer
 Once your order is complete you will receive an installer link. It will have the following format:
 ```bash
