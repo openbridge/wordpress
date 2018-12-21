@@ -277,10 +277,15 @@ On Amazon it will look like this:
 
 ![Image of Amazon userdata](./images/ami-userdata-empty.png)
 
+## Do you offer an Amazon Marketplace AMI?
+Yes, the Amazon Marketplace AMI is here: https://aws.amazon.com/marketplace/pp/B07FCV1BPF
 
 ## I'm using the Amazon Marketplace AMI. How do I set the `USERDATA` for it?
-Setting `USERDATA` will set the host name in your instance. If you do not set the `USERDATA`. we will use the instance host name set by AWS.
+Are you using our AWS AMI: https://aws.amazon.com/marketplace/pp/B07FCV1BPF? If so read on...
 
+Setting `USERDATA` will set the host name in your AMI instance. If you do not set the `USERDATA`. we will use the instance host name set by AWS.
+
+Make sure when launching your AMI you are setting this (replace "yourhost.com" with your actual domain)
 ```bash
 #!/bin/bash
 echo "SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
@@ -473,8 +478,6 @@ You will likely want to dispatch logs to a service like Amazon Cloudwatch. This 
 |-----|-------|-----|--------|
 | latest | ami-deb3eea1 | 1.0.2 | 3.8 |
 | latest | ami-deb3eea1 | 1.0.1 | 3.8 |
-
-
 
 
 # Issues
