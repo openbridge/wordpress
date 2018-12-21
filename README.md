@@ -3,7 +3,7 @@
 # Docker WordPress 5 with Nginx, PHP-FPM, MariaDB and Redis
 
 * Are you tired of slow, inefficient WordPress hosts?
-* Struggling with barebones *"default"* installs that leave all the tweaking and optimizations up to you to figure out?
+* Struggling with barebones *"default"* installs that leave all the tweaking and optimizations to figure out?
 * Frustrated with slow page loading time and slow server response times?
 * Dealing with missing functions, a plugin blacklist and limits on customizations or themes?
 * Annoyed by having to use an army of cache plugins to get a functioning site?
@@ -83,7 +83,7 @@ There are many, many other benefits to this system. Give it a try!
 ## Step 1: Order Your Wordpress Installer
 First, you need to order your installer. You can get that here!
 
-<a href="http://get.wordpressapp.sh"><img src="./images/order.png" alt="drawing" width="300"/>
+<a href="http://get.wordpressapp.sh"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/>
 </a>
 ### Your Installer
 Once your order is complete you will receive an installer link. It will have the following format:
@@ -110,22 +110,22 @@ Within your hosting provider, make sure you have done some preparation in advanc
 
 Amazon Linux
 
-<img src="./images/lightsail-amazon-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-amazon-os.png" alt="Amazon OS" width="450"/>
 
 
 Ubuntu
 
-<img src="./images/lightsail-ubuntu-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-ubuntu-os.png" alt="Ubuntu" width="450"/>
 
 CentOS
 
-<img src="./images/lightsail-centos-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-centos-os.png" alt="CentOS" width="450"/>
 
 *  **Firewall**: Make sure ports `80` and `443` are open. Also, if you SSH into your server make sure `22` is also open.
 
 * **Server Ram**: We suggest a server with no less than **1 GB** of ram. Can things run with 512 MB, yes. However, there is a risk of hitting memory constraints. The difference between an instance with 512 MB of ram and one with 1 GB of ram on Amazon Lightsail is **$1.50** USD a month. Let's put it this way, the risk of hitting memory limits is not worth $1.50 in savings you might realize.
 
-<img src="./images/lightsail-price.png" alt="drawing" width="500"/>
+<img src="./images/lightsail-price.png" alt="Lightsail Pricing" width="500"/>
 
 All set with these? You are ready to move to **Step 3**.
 
@@ -147,7 +147,7 @@ curl -sSL https://get.wordpressapp.sh/ch_12ASDKASKJKA2312213.sh | DOMAIN=www.myw
 ```
 
 Here is what it looks like within Lightsail:
-![Image of Default WordPress Site](./images/lightsail-userdata.png)
+![Amazon Lightsail userdata](./images/lightsail-userdata.png)
 
 Thats it! When your host provisions the server the installer will get run automatically. Once complete, your server will be ready to go!
 
@@ -191,7 +191,7 @@ The default WordPress 5 install visually looks like:
 
 If you want to log into the `wp-admin` console, you need to get your password. You can also get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds. You can also SSH into your instance. The user/pass is located in a file called `wordpress-login.txt`. You will likely want to change this and remove the `wordpress-login.txt` after your first login.
 
-![Image of Default WordPress Site](./images/wp-admin.png)
+![Image of Default WordPress Admin](./images/wp-admin.png)
 
 # Frequently Asked Questions
 
@@ -275,7 +275,7 @@ If the rest of the `wordpress.env` variables don't look familiar, don't touch th
 
 On Amazon it will look like this:
 
-![Image of Default WordPress Site](./images/ami-userdata-empty.png)
+![Image of Amazon userdata](./images/ami-userdata-empty.png)
 
 
 ## I'm using the Amazon Marketplace AMI. How do I set the `USERDATA` for it?
@@ -285,22 +285,20 @@ Setting `USERDATA` will set the host name in your instance. If you do not set th
 #!/bin/bash
 echo "SERVER_HOSTNAME=yourhost.com" > /home/ec2-user/host.sh
 ```
-This
+
 It will look like this:
-![Image of Default WordPress Site](./images/ami-userdata2.png)
 
-Here is a close up:
+![Image of Amazon userdata](./images/ami-userdata2.png)
 
-![Image of Default WordPress Site](./images/ami-userdata.png)
 
 ## I see "Not Secure" in my browser
 This happens if you forgot to setup or misconfigured the IP and DNS before running the installer
 You need to set your domain name and get your SSL setup.
 
-![Image of Default WordPress Site](./images/generic-ssl.png)
+![Image of SSL](./images/generic-ssl.png)
 
 ## How are SSL certs organized?
-To keep things organized we default to using  [`letsencrypt`](https://letsencrypt.org/) pathing and naming conventions. Even if you are using your own certs, follow the naming conventions detailed below.
+To keep things organized we default to using [`letsencrypt`](https://letsencrypt.org/) pathing and naming conventions. Even if you are using your own certs, follow the naming conventions detailed below.
 
 In keeping with the `letsencrypt` conventions the certs are using this path and naming scheme:
 ```bash
@@ -327,13 +325,13 @@ volumes:
 
 ## How does NGINX know where to find the SSL certs?
 
-The default locations for the SSL certs within NGINX are in `/conf.d/ssl.conf`.
+NGINX will look for the mounted certs according the path set in the `wordpress.yml`. This aligns with the the default locations for the SSL certs within Docker NGINX here `/etc/nginx/conf.d/ssl.conf`.
 ```nginx
 ssl_certificate /etc/letsencrypt/live/www.mywebsite.com/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/www.mywebsite.com/privkey.pem;
 ssl_trusted_certificate /etc/letsencrypt/live/www.mywebsite.com/chain.pem;
 ```
-NGINX will look for the mounted certs according the path set in the `wordpress.yml`.
+
 
 ## Can I manually run `certbot` for `letsencrypt` SSL certs?
 On your **host**, not in the Docker image,  we pre-installed the `certbot` Docker image.
@@ -356,7 +354,7 @@ Then start up all your services again:
 ```bash
 /usr/local/bin/docker-compose -f /home/ec2-user/wordpress.yml up -d --remove-orphans
 ```
-
+**NOTE**: `/home/ec2-user/` is the directory you ran the installer. Replace this with your actual directory. Normally this will be the HOME directory for the user account you used for the install. For example, for AWS it is likely that `/home/ec2-user/` may be the path. Just do not copy this blindly as it is dependent on your unique environment.
 
 ## Can I automate `letsencrypt` SSL renewals
 Yes, you can setup a renewal process. The `letsencrypt` docs say check twice a day for changes. The the renewal process with cron will look something like this:
