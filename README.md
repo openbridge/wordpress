@@ -83,8 +83,7 @@ There are many, many other benefits to this system. Give it a try!
 ## Step 1: Order Your Wordpress Installer
 First, you need to order your installer. You can get that here!
 
-<a href="http://get.wordpressapp.sh"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/>
-</a>
+<a href="http://get.wordpressapp.sh" target="_blank"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/></a>
 ### Your Installer
 Once your order is complete you will receive an installer link. It will have the following format:
 ```bash
