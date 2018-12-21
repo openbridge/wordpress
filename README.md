@@ -10,7 +10,9 @@
 * Sick of being in a shared server with a dozen other WordPress sites?
 
 **This is a perfect opportunity to get a WordPress Stack that provides an automated, super fast solution for those who to maximize performance and prefer dedicated WordPress installs**.
-#  Why the Openbridge Wordpress Stack?
+
+
+##  Why the Openbridge Wordpress Stack?
 Our high-performance WordPress micro-services stack is based on lightweight, secure, up-to-date, and highly optimized set Docker services. We fuse a best of breed collection of Docker services from [NGINX](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Together they create a performance driven, flexible environment that delivers reliability, security, and scale.
 
 Powerful NGINX and PHP optimizations ensure optimal WordPress performance, reducing or eliminating the need of WordPress plugins that create unnecessary overhead. As a result you can easily serve millions of requests a day with minimal CPU, RAM and disk resources.
@@ -42,6 +44,39 @@ This is the only WordPress service that combined [Nginx](https://github.com/open
 
 There are many, many other benefits to this system. Give it a try!
 
+
+# User Guide
+
+- [Getting Started](#getting-started)
+	- [Step 1: Order Your Wordpress Installer](#step-1-order-your-wordpress-installer)
+	- [Step 2: Getting Your Hosting Environment Setup](#step-2-getting-your-hosting-environment-setup)
+	- [Step 3: Launch Your Server](#step-3-launch-your-server)
+	- [Step 4: Welcome! Your new WordPress install is activated](#step-4-welcome-your-new-wordpress-install-is-activated)
+- [Frequently Asked Questions](#frequently-asked-questions)
+	- [Why do I need to setup DNS or a Domain name?](#why-do-i-need-to-setup-dns-or-a-domain-name)
+	- [What is the `wordpress.env` file?](#what-is-the-wordpressenv-file)
+	- [Only change these if you know what you are doing](#only-change-these-if-you-know-what-you-are-doing)
+	- [Where do I set `USERDATA`?](#where-do-i-set-userdata)
+	- [I'm using the Amazon Marketplace AMI. How do I set the `USERDATA` for it?](#im-using-the-amazon-marketplace-ami-how-do-i-set-the-userdata-for-it)
+	- [I see "Not Secure" in my browser](#i-see-not-secure-in-my-browser)
+	- [How are SSL certs organized?](#how-are-ssl-certs-organized)
+	- [How does NGINX know where to find the SSL certs?](#how-does-nginx-know-where-to-find-the-ssl-certs)
+	- [Can I manually run `certbot` for `letsencrypt` SSL certs?](#can-i-manually-run-certbot-for-letsencrypt-ssl-certs)
+	- [Can I automate `letsencrypt` SSL renewals](#can-i-automate-letsencrypt-ssl-renewals)
+	- [Do you already have SSL certs from another source?](#do-you-already-have-ssl-certs-from-another-source)
+	- [Editing the `wordpress.yml`](#edit-wordpressyml)
+	- [How do I Start and Stop Docker Services](#how-do-i-start-and-stop-docker-services)
+	- [Can I use WP-CLI to manage my WordPress install?](#can-i-use-wp-cli-to-manage-my-wordpress-install)
+	- [I got a `Bad Gateway` error. What does that mean?](#i-got-a-bad-gateway-error-what-does-that-mean)
+- [Customization](#customization)
+- [Logs](#logs)
+- [Versioning](#versioning)
+- [Issues](#issues)
+- [Contributing](#contributing)
+- [References](#references)
+- [License](#license)
+
+<!-- /TOC -->
 
 # Getting Started
 
