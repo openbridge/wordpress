@@ -465,7 +465,7 @@ You will likely want to dispatch logs to a service like Amazon Cloudwatch. This 
 
 ## Wordpress Installer AMI
 | Docker Tag  | Wordpress Installer | Alpine Version |
-|-----|-------|-----|--------|
+|-----|-------|--------|
 | latest | 1.0.0 | 3.8 |
 
 ## Amazon Marketplace AMI
