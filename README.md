@@ -1,4 +1,4 @@
-![Image of WordPress](https://cdn.openbridge.com/assets/images/openbridge-WordPress-small.png)
+<img src="https://cdn.openbridge.com/assets/images/openbridge-wordpress-small.png" alt="WordPress Docker Installer" width="175"/>
 
 # Docker WordPress 5 with Nginx, PHP-FPM, MariaDB and Redis
 
@@ -10,7 +10,6 @@
 * Sick of being in a shared server with a dozen other WordPress sites?
 
 **This is a perfect opportunity to get a WordPress Stack that provides an automated, super fast solution for those who to maximize performance and prefer dedicated WordPress installs**.
-
 #  Why the Openbridge Wordpress Stack?
 Our high-performance WordPress micro-services stack is based on lightweight, secure, up-to-date, and highly optimized set Docker services. We fuse a best of breed collection of Docker services from [NGINX](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Together they create a performance driven, flexible environment that delivers reliability, security, and scale.
 
@@ -49,7 +48,7 @@ There are many, many other benefits to this system. Give it a try!
 ## Step 1: Order Your Wordpress Installer
 First, you need to order your installer. You can get that here!
 
-<a href="http://get.wordpressapp.sh"><img src="./order.png" alt="drawing" width="300"/>
+<a href="http://get.wordpressapp.sh"><img src="./images/order.png" alt="drawing" width="300"/>
 </a>
 ### Your Installer
 Once your order is complete you will receive an installer link. It will have the following format:
@@ -76,22 +75,22 @@ Within your hosting provider, make sure you have done some preparation in advanc
 
 Amazon Linux
 
-<img src="./lightsail-amazon-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-amazon-os.png" alt="drawing" width="450"/>
 
 
 Ubuntu
 
-<img src="./lightsail-ubuntu-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-ubuntu-os.png" alt="drawing" width="450"/>
 
 CentOS
 
-<img src="./lightsail-centos-os.png" alt="drawing" width="450"/>
+<img src="./images/lightsail-centos-os.png" alt="drawing" width="450"/>
 
 *  **Firewall**: Make sure ports `80` and `443` are open. Also, if you SSH into your server make sure `22` is also open.
 
 * **Server Ram**: We suggest a server with no less than **1 GB** of ram. Can things run with 512 MB, yes. However, there is a risk of hitting memory constraints. The difference between an instance with 512 MB of ram and one with 1 GB of ram on Amazon Lightsail is **$1.50** USD a month. Let's put it this way, the risk of hitting memory limits is not worth $1.50 in savings you might realize.
 
-<img src="./lightsail-price.png" alt="drawing" width="500"/>
+<img src="./images/lightsail-price.png" alt="drawing" width="500"/>
 
 All set with these? You are ready to move to **Step 3**.
 
