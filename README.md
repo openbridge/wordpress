@@ -44,6 +44,12 @@ This is the only WordPress service that combined [Nginx](https://github.com/open
 
 There are many, many other benefits to this system.
 
+# `PageSpeed` Benchmark
+This test was run using PageSpeed. This was running a full Wordpress stack and the default WP theme as detailed here: https://github.com/openbridge/wordpress
+
+The install scored a **100**, including exceptional performance on all the infrastructure benchmarks
+
+<img src="images/developers.google.com-test.png" alt="Pagespeed-wordpress" style="width: 525px;"/>
 
 # User Guide
 
@@ -443,6 +449,7 @@ For a full list of commands, check out the [WP-CLI docs](https://developer.WordP
 If you happen to see a bad gateway error, hard reload your browser. It is possible you have something in your browser cache that is causing this OR the system is still installing the WordPress application. It can take up to 5-10 minutes after initializing your instance for the site to appear. Normally it is much faster than that, but depending on a variety of factors it is best to wait for everything to settle:
 
 ![Image of Bad Gateway](./images/bad-gateway.png)
+
 
 # Customization
 This WordPress services builds upon the community (free) versions of our [NGINX](https://github.com/openbridge/nginx) and [PHP-FPM](https://github.com/openbridge/ob_php-fpm) images. You are free to customize these services and this WordPress service as you feel is appropriate. However, we can only provide support to systems that use the default installs.
