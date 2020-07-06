@@ -112,12 +112,13 @@ Within your hosting provider, make sure you have done some preparation in advanc
 
 *  **IP and DNS**: Make sure your IP address and domain name are configured. This means the DNS you are using can get resolved to an IP address. If this is not setup, the `Letsencrypt` process **will not** be able to provision your SSL certs. The installer will fallback to self-signed SSL certs. If your IP (x.x.x.x) does not point to a DNS A Record ( `yourhost.com` or `www.yourhost.com` ) then you will need to manually adjust this later.
 
-*  **Host Operating System**: The installer will work with CentOS 7 x64, Amazon Linux 1/2 x64 and Ubuntu 18/16 x64. Ideally for CentOS you will use the latest release. The same is for Ubuntu. For Amazon Linux, you can use Amazon Linux or Amazon Linux 2. here are some examples of using Amazon Lightsail:
+*  **Host Operating System**: The installer will work with CentOS 7 x64, Amazon Linux 1/2 x64 and Ubuntu 18/16 x64. Ideally for CentOS you will use the latest release. The same is for Ubuntu. For Amazon Linux, you can use Amazon Linux or Amazon Linux 2.
+
+Here are some examples of using Amazon Lightsail:
 
 Amazon Linux
 
 <img src="./images/lightsail-amazon-os.png" alt="Amazon OS" width="450"/>
-
 
 Ubuntu
 
