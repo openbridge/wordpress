@@ -91,6 +91,8 @@ First, you need to order your installer. You can get that here!
 
 <a href="http://get.wordpressapp.sh" target="_blank"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/></a>
 
+<strong>LIMITED TIME OFFER</strong>: Get 50% off your order with coupon code <strong>GET50OFF</strong>.
+
 ### Your Installer
 Once your order is complete you will receive an installer link. It will have the following format:
 ```bash
