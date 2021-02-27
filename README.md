@@ -198,7 +198,9 @@ The default WordPress 5 install visually looks like:
 
 ![Image of Default WordPress Site](./images/wordpress5.png)
 
-If you want to log into the `wp-admin` console, you need to get your password. You can also get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds. You can also SSH into your instance. The user/pass is located in a file called `wordpress-login.txt`. You will likely want to change this and remove the `wordpress-login.txt` after your first login.
+If you want to log into the `/wp-admin/` console, you need to get your password. You can also get it from AWS console by looking at the `Get System Logs` and scrolling for `WORDPRESS_ADMIN_PASSWORD`. You can also SSH into your instance and get the creds. You can also SSH into your instance. The user/pass is located in a file called `wordpress-login.txt`. You will likely want to change this and remove the `wordpress-login.txt` after your first login.
+
+Please note: You MUST use `/wp-admin/`, not `/wp-admin` to log into the admin console. NGINX will attempt to internally redirect `/wp-admin`which will result in an error.
 
 ![Image of Default WordPress Admin](./images/wp-admin.png)
 
