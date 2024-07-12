@@ -1,6 +1,6 @@
 <img src="https://cdn.openbridge.com/assets/images/openbridge-wordpress-small.png" alt="WordPress Docker Installer" width="175"/>
 
-# Docker WordPress 5 with Nginx, PHP-FPM, MariaDB and Redis
+# Docker WordPress 6 with Nginx, PHP-FPM, MariaDB and Redis
 
 * Are you tired of slow, inefficient WordPress hosts?
 * Struggling with barebones *"default"* installs that leave all the tweaking and optimizations to figure out?
@@ -194,7 +194,7 @@ Once your WordPress install is complete, or if you set your hostname via `USERDA
 
 **Note:** You will want to delete the test `index.html`.
 
-The default WordPress 5 install visually looks like:
+The default WordPress 6 install visually looks like:
 
 ![Image of Default WordPress Site](./images/wordpress5.png)
 
