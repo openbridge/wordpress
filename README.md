@@ -1,4 +1,3 @@
-<img src="https://cdn.openbridge.com/assets/images/openbridge-wordpress-small.png" alt="WordPress Docker Installer" width="175"/>
 
 # Docker WordPress 6 with Nginx, PHP-FPM, MariaDB and Redis
 
