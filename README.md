@@ -1,15 +1,16 @@
 
-# Docker WordPress 6 with Nginx, PHP-FPM, MariaDB and Redis
+# Docker WordPress 6 with Nginx, PHP-FPM, MariaDB, and Redis
 
 * Are you tired of slow, inefficient WordPress hosts?
 * Struggling with barebones *"default"* installs that leave all the tweaking and optimizations to figure out?
 * Frustrated with slow page loading time and slow server response times?
-* Dealing with missing functions, a plugin blacklist and limits on customizations or themes?
-* Annoyed by having to use an army of cache plugins to get a functioning site?
+* Dealing with missing functions, a plugin blacklist, and limits on customizations or themes?
+* Annoyed by using an army of cache plugins to get a functioning site?
 * Sick of being in a shared server with a dozen other WordPress sites?
 
-**This is a perfect opportunity to get a WordPress Stack that provides an automated, super fast solution for those who want to maximize performance and prefer dedicated WordPress installs**.
+**This is a perfect opportunity to get a WordPress Stack that provides an automated, super-fast solution for those who want to maximize performance and prefer dedicated WordPress installs**.
 
+### -->> [Order Today!](https://openbridge.gumroad.com/l/tjvhb) <<--
 
 ##  Why the Docker Wordpress Stack?
 A high-performance Docker WordPress micro-services stack is based on lightweight, secure, up-to-date, and highly optimized set Docker services. We fuse a best of breed collection of Docker services from [NGINX](https://github.com/openbridge/nginx), [PHP-FPM](https://github.com/openbridge/ob_php-fpm), MariaDB and Redis. Together they create a performance driven, flexible environment that delivers reliability, security, and scale.
@@ -39,14 +40,15 @@ This is the only WordPress Docker service that combined [Nginx](https://github.c
 * Opcache
 * Paired with [high performance PHP-FPM container](https://github.com/openbridge/ob_php-fpm)
 * Cerbot
-* ACME: The simplest shell script for Let's Encrypt free certificate client (https://github.com/Neilpang/acme.sh)
 
 There are many, many other benefits to this system.
+
+### -->> [Order Today!](https://openbridge.gumroad.com/l/tjvhb) <<--
 
 # `Wordpress PageSpeed` Benchmark
 This Wordpress speed test was run using PageSpeed. This was running a full Wordpress stack and the default WP theme as detailed here: https://github.com/openbridge/wordpress
 
-The install scored a **100**, including exceptional performance on all the infrastructure benchmarks
+The install scored a **100**, including exceptional performance on all the infrastructure benchmarks.
 
 <img src="images/developers.google.com-test.png" alt="Pagespeed-wordpress" style="width: 525px;"/>
 
@@ -88,23 +90,22 @@ The install scored a **100**, including exceptional performance on all the infra
 ## Step 1: Order Your Wordpress Installer
 First, you need to order your installer. You can get that here!
 
-<a href="http://get.wordpressapp.sh" target="_blank"><img src="./images/order.png" alt="WordPress Installer Order" width="300"/></a>
+### -->> [Order Today!](https://openbridge.gumroad.com/l/tjvhb) <<--
 
-<strong>LIMITED TIME OFFER</strong>: Get 75% off your order with coupon code <strong>SPECIAL75</strong>.
 
 ### Your Installer
-Once your order is complete you will receive an installer link. It will have the following format:
+Once your order is complete you will receive an installer script. It will have the following format:
 ```bash
-curl -sSL https://get.wordpressapp.sh/<your-token>.sh | DOMAIN=<yourdomain> sh
+curl -sSL https://get.wordpressapp.sh/<your-script>.sh | DOMAIN=<yourdomain> sh
 ```
-You will notice two parts to your WordPress installer link. The first part is is `<your-token>.sh`. The token reflects your specific purchase key. We will automatically create a unique token for your installer. The final link will look like this:
+You will notice two parts to your WordPress installer link. The first part is is `<your-script>.sh`. The token reflects your specific purchase key. We will automatically create a unique token for your installer. The final link will look like this:
 
 ```bash
-curl -sSL https://get.wordpressapp.sh/ch_12ASDKASKJKA2312213.sh | DOMAIN=<yourdomain> sh
+curl -sSL https://get.wordpressapp.sh/sctipt.sh | DOMAIN=<yourdomain> sh
 ```
 Next, you will need to add your actual domain name. This means `DOMAIN=` should reference DNS you attached to your IP address. Replace the placeholder with your actual domain. It should look like this:
 ```bash
-curl -sSL https://get.wordpressapp.sh/ch_12ASDKASKJKA2312213.sh | DOMAIN=www.mywebsite.com sh
+curl -sSL https://get.wordpressapp.sh/sctipt.sh | DOMAIN=www.mywebsite.com sh
 ```
 All set? Lets move to **Step 2** and get your hosting environment setup
 
@@ -151,7 +152,7 @@ If your hosting provider supports `USERDATA` you can simply cut and paste your i
 
 ```sh
 #!/usr/bin/env sh
-curl -sSL https://get.wordpressapp.sh/ch_12ASDKASKJKA2312213.sh | DOMAIN=www.mywebsite.com sh
+curl -sSL https://get.wordpressapp.sh/script.sh | DOMAIN=www.mywebsite.com sh
 ```
 
 Here is what it looks like within Lightsail:
@@ -176,7 +177,7 @@ Take me to [Amazon AMI instructions](## I'm using the Amazon Marketplace AMI. Ho
 Is the use of `USERDATA` required? NO! You can `SSH` your server and run the same command:
 
 ```bash
-[root@ip-222-21-2-11 ec2-user]: curl -sSL https://get.wordpressapp.sh/<your-token>.sh | DOMAIN=<yourdomain> sh
+[root@ip-222-21-2-11 ec2-user]: curl -sSL https://get.wordpressapp.sh/<your-script>.sh | DOMAIN=<yourdomain> sh
 ```
 
 ### NOTE: Timing to complete the install...
@@ -456,9 +457,9 @@ If you happen to see a bad gateway error, hard reload your browser. It is possib
 
 
 # Customization
-This WordPress services builds upon the community (free) versions of our [NGINX](https://github.com/openbridge/nginx) and [PHP-FPM](https://github.com/openbridge/ob_php-fpm) images. You are free to customize these services and this WordPress service as you feel is appropriate. However, we can only provide support to systems that use the default installs.
+This WordPress service builds upon the community (free) versions of our [NGINX](https://github.com/openbridge/nginx) and [PHP-FPM](https://github.com/openbridge/ob_php-fpm) images. You are free to customize these services and this WordPress service as you feel is appropriate. However, we can only provide support to systems that use the default installs.
 
-Looking for customizations, configuration or enhancement based on your specific requirements? here are a few example engagements:
+Are you looking for customizations, configurations, or enhancements based on your specific requirements? here are a few example engagements:
 
 * Performance Audit / Consult
 * Plugin Configuration
@@ -482,13 +483,13 @@ You will likely want to dispatch logs to a service like Amazon Cloudwatch. This 
 ## Wordpress Installer AMI
 | Docker Tag  | Wordpress Installer | Alpine Version |
 |-----|-------|--------|
-| latest | 1.0.0 | 3.8 |
+| latest | 1.0.0 | 3.18 |
 
 ## Amazon Marketplace AMI
 | Docker Tag | AMI ID | AMI Version | Alpine Version |
 |-----|-------|-----|--------|
-| latest | ami-deb3eea1 | 1.0.2 | 3.8 |
-| latest | ami-deb3eea1 | 1.0.1 | 3.8 |
+| latest | ami-deb3eea1 | 1.0.2 | 3.18 |
+| latest | ami-deb3eea1 | 1.0.1 | 3.18 |
 
 
 # Issues
@@ -498,7 +499,7 @@ If you have any problems with or questions about this image, please contact us t
 
 # Contributing
 
-You are invited to contribute new features, fixes, or updates, large or small; we are always thrilled to receive pull requests, and do our best to process them as fast as we can.
+You are invited to contribute new features, fixes, or updates, large or small. We are always thrilled to receive pull requests and do our best to process them as quickly as possible.
 
 Before you start to code, we recommend discussing your plans through a GitHub issue, especially for more ambitious contributions. This gives other contributors a chance to point you in the right direction, give you feedback on your design, and help you find out if someone else is working on the same thing.
 
